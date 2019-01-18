@@ -10,7 +10,7 @@ import UIKit
 
 let π = CGFloat(Double.pi)
 
-enum ArcStartLocation: Int {
+public enum ArcStartLocation: Int {
     case Top;
     case Right;
     case Bottom;
@@ -18,18 +18,18 @@ enum ArcStartLocation: Int {
 }
 
 @objc
-@IBDesignable class CircularProgressView: UIView {
+@IBDesignable public class CircularProgressView: UIView {
 
-    @IBInspectable var ringBackgroundColour: UIColor = .lightGray
-    @IBInspectable var ringForegroundColour: UIColor = .green
-    @IBInspectable var progressLabelColor: UIColor = .black
+    @IBInspectable public var ringBackgroundColour: UIColor = .lightGray
+    @IBInspectable public var ringForegroundColour: UIColor = .green
+    @IBInspectable public var progressLabelColor: UIColor = .black
     
-    @IBInspectable var foreGroundArcWidth: CGFloat = 8
-    @IBInspectable var backGroundArcWidth: CGFloat = 8
-    @IBInspectable var animateProgress: Bool = false
-    @IBInspectable var displayProgressTextually: Bool = false
+    @IBInspectable public var foreGroundArcWidth: CGFloat = 8
+    @IBInspectable public var backGroundArcWidth: CGFloat = 8
+    @IBInspectable public var animateProgress: Bool = false
+    @IBInspectable public var displayProgressTextually: Bool = false
     
-    @IBInspectable var selectedValue: UInt8 = 0 {
+    @IBInspectable public var selectedValue: UInt8 = 0 {
         didSet {
             let value = max(0, min(selectedValue, 100))
             animateScale = Float(value) / 100
@@ -37,7 +37,7 @@ enum ArcStartLocation: Int {
         }
     }
     
-    @IBInspectable var arcStartLocation: Int {
+    @IBInspectable public var arcStartLocation: Int {
         set(newValue) {
             if newValue < 0 || newValue > 3 {
                 internalArcStartLocation = 0
@@ -55,7 +55,7 @@ enum ArcStartLocation: Int {
     private var progressIndicatorLabel = UILabel()
     private var internalArcStartLocation = 0
     
-	override func draw(_ rect: CGRect) {
+    override public func draw(_ rect: CGRect) {
 		backgroundArc()
         if animateProgress {
             animateArc(value: CGFloat(animateScale))
@@ -91,7 +91,7 @@ enum ArcStartLocation: Int {
     
     private func centerAndRadius() -> (center: CGPoint, radius: CGFloat) {
         let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-        let diameter = max(bounds.width - arcMargin, bounds.height - arcMargin)
+        let diameter = min(bounds.width - arcMargin, bounds.height - arcMargin)
         let radius = diameter / 2 - max(foreGroundArcWidth, backGroundArcWidth) / 2
         return (center, radius)
     }
@@ -139,7 +139,7 @@ enum ArcStartLocation: Int {
         animation.duration = 2
         animation.fromValue = 0
         animation.toValue = loaderValue // changed here
-        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
 
         ringLayer.path = arcPath.cgPath
         ringLayer.strokeColor = ringForegroundColour.cgColor
@@ -166,8 +166,8 @@ enum ArcStartLocation: Int {
         let value = Int(loaderValue * 100)
         let attributedString = NSMutableAttributedString(string: "\(value)%")
         
-        attributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 14.0), range: NSMakeRange(attributedString.length - 1, 1))
-        attributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 16.0), range: NSMakeRange(0, attributedString.length - 1))
+        attributedString.addAttribute(NSAttributedString.Key.font, value: UIFont.systemFont(ofSize: 14.0), range: NSMakeRange(attributedString.length - 1, 1))
+        attributedString.addAttribute(NSAttributedString.Key.font, value: UIFont.systemFont(ofSize: 16.0), range: NSMakeRange(0, attributedString.length - 1))
         
         self.progressIndicatorLabel.attributedText = attributedString
         self.addSubview(progressIndicatorLabel)
